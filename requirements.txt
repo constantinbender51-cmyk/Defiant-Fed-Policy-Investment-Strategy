@@ -1,8 +1,8 @@
 # Dependencies for Defiant-Fed-Policy-Investment-Strategy
 # Generated based on current implementation in app.py
 
-Flask==2.3.3
-pandas==2.1.4
-yfinance==0.2.33
-requests==2.31.0
-numpy==1.24.4
+Flask
+pandas
+yfinance
+requests
+numpy
