@@ -205,12 +205,28 @@ def run_strategy():
         if m: raw_data.append(m)
         time.sleep(1.1) # Respect API limits
 
+    # [FIX] Check for empty data before creating DataFrame
+    if not raw_data:
+        print("❌ No stock data fetched. Check API Limit or Key.")
+        return
+
     df = pd.DataFrame(raw_data)
 
     # --- STEP 3: CALCULATE METRICS (Mapping Logic) ---
+    # Ensure required columns exist
+    required_cols = ['PE', 'Margin', 'Growth']
+    for col in required_cols:
+        if col not in df.columns:
+            print(f"❌ Missing column: {col}. Data frame is malformed.")
+            return
+
     # Clean data: drop rows where essential metrics are missing
-    df = df.dropna(subset=['PE', 'Margin', 'Growth'])
+    df = df.dropna(subset=required_cols)
     df = df[df['PE'] > 0] # Filter out negative earnings for PE calc validity
+
+    if df.empty:
+        print("❌ No valid stocks remaining after filtering (PE > 0 and non-null metrics).")
+        return
 
     # Calculate 'pr' (Profitability Score)
     # Logic: Operating Margin * (1 / PE)
@@ -226,6 +242,10 @@ def run_strategy():
     mean_g, std_g = df['Growth'].mean(), df['Growth'].std()
     mean_p, std_p = df['ProfitScore'].mean(), df['ProfitScore'].std()
     
+    # Avoid division by zero
+    if std_g == 0: std_g = 1
+    if std_p == 0: std_p = 1
+
     df['z_growth'] = (df['Growth'] - mean_g) / std_g
     df['z_profit'] = (df['ProfitScore'] - mean_p) / std_p
 
