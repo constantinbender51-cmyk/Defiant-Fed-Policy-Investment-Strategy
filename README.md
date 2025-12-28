@@ -1,4 +1,4 @@
-Live: [Go to link]([https://www.google.com](https://defiant-fed-investing.up.railway.app/))
+Live: [Go to link](https://defiant-fed-investing.up.railway.app/)
 
 
 Quantitative Regime Analysis Engine
